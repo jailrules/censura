@@ -1,0 +1,44 @@
+name: censura
+main: com.craftcostaserver.jailrules.censura.Censura
+version: 0.1
+description: Plugin de castigos
+commands:
+  cjail:
+    description: Usa /cjail para encarcelar a un jugador
+    usage: /<command> <jugador> <celda> <tiempo> <razon>
+  cunjail:
+    description: Usa /cjail para desencarcelar a un jugador
+    usage: /<command> <jugador> <razon>
+  ckick:
+    description: Usa /ckick para kickear a un jugador
+    usage: /<command> <jugador> <razon>
+  ctempban:
+    description: Usa /ctempban para banear temporalmente a un jugador
+    usage: /<command> <jugador> <tiempo> <razon>
+  cban:
+    description: Usa /cban para banear a un jugador
+    usage: /<command> <jugador> <razon>
+  cunban:
+    description: Usa /cunban para desbanear a un jugador
+    usage: /<command> <jugador> <razon>
+  cmute:
+    description: Usa /cmute para mutear a un jugador
+    usage: /<command> <jugador> <razon>
+  ctempmute:
+    description: Usa /ctempmute para mutear temporalmente a un jugador
+    usage: /<command> <jugador> <tiempo> <razon>
+  cunmute:
+    description: Usa /cjail para desmutear a un jugador
+    usage: /<command> <jugador> <razon>
+  cwarn:
+    description: Usa /cwarn para advertir a un jugador
+    usage: /<command> <jugador> <razon>
+  cjailmute:
+    description: Usa /cjailmute para encarcelar y mutear temporalmente a un jugador
+    usage: /<command> <jugador> <celda> <tiempo> <razon>
+  cphistory:
+    description: Usa /cphistory para ver el historial de castigos de un jugador
+    usage: /<command> <jugador>
+  chistory:
+    description: Usa /chistory para mostrar el historial de castigos
+    usage: /<command> <page>
