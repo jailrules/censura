@@ -203,6 +203,36 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
+		
+		if(commandLabel.equalsIgnoreCase("cwarn")){
+			if(args.length<2){
+				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+				return false;
+			}else{
+				for(int i=1;i<args.length;i++){
+					aux+=args[i]+" ";
+				}
+				if(player.performCommand("warn "+ args[0]+ aux)){
+					player.sendMessage(ChatColor.RED + "Advertiste a: "+ ChatColor.WHITE+ args[0]);
+					player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+				}else{
+					player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+					return false;
+				}
+				return true;
+			}
+		}
+		
+		if(commandLabel.equalsIgnoreCase("cphistory")){
+			if(args.length<2){
+				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+				return false;
+			}else{
+				player.sendMessage(ChatColor.RED + "Muteaste temporalmente a: "+ ChatColor.WHITE+ args[0]);
+				player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+				return true;
+			}
+		}
 		return false;
 	}
 }
