@@ -94,6 +94,100 @@ public class Censura extends JavaPlugin{
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[]){
 		Player player= (Player) sender;
 		String aux="";
+		if(commandLabel.equalsIgnoreCase("censura")){
+			if(args.length==0){
+				player.sendMessage(ChatColor.WHITE+ "Usa "+ChatColor.GOLD+"/censura Help "+ChatColor.WHITE+"para obtener ayuda");
+			}else{
+				if(args.length==1){
+					if(args[0].equalsIgnoreCase("help")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Help ----");
+						player.sendMessage(ChatColor.GOLD+"/cban "+ChatColor.WHITE+"Usa /censura ban Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"Usa /censura tempban Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cunban "+ChatColor.WHITE+"Usa /censura unban Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cmute "+ChatColor.WHITE+"Usa /censura mute Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/ctempmute "+ChatColor.WHITE+"Usa /censura tempmute Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cunmute "+ChatColor.WHITE+"Usa /censura unmute Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cwarn "+ChatColor.WHITE+"Usa /censura warn Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"Usa /censura jail Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cunjail "+ChatColor.WHITE+"Usa /censura unjail Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cjailmute "+ChatColor.WHITE+"Usa /censura jailmute Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/ckick "+ChatColor.WHITE+"Usa /censura kick Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/chistory "+ChatColor.WHITE+"Usa /censura history Para mas informacion");
+						player.sendMessage(ChatColor.GOLD+"/cphistory "+ChatColor.WHITE+"Usa /censura phistory Para mas informacion");
+					}
+					
+					if(args[0].equalsIgnoreCase("ban")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Ban Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cban "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("tempban")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura TempBan Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"para banear temporalmente a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"<Usuario> <Duracion> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("unban")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura UnBan Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cunban "+ChatColor.WHITE+"para desbanear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cunban "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("mute")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Mute Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cmute "+ChatColor.WHITE+"para mutear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cmute "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("tempmute")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura TempMute Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/ctempmute "+ChatColor.WHITE+"para mutear temporalmente a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/ctempmute "+ChatColor.WHITE+"<Usuario> <Duracion> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("unmute")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura UnMute Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cunmute "+ChatColor.WHITE+"para desmutear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cunmute "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("kick")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Kick Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/ckick "+ChatColor.WHITE+"para kickear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/ckick "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("warn")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Warn Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cwarn "+ChatColor.WHITE+"para advertir a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cwarn "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("history")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura History Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/chistory "+ChatColor.WHITE+"para ver el historial de castigos aplicados");
+						player.sendMessage(ChatColor.GOLD+"/chistory "+ChatColor.WHITE+"<pagina>");
+					}
+					if(args[0].equalsIgnoreCase("phistory")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura PlayerHistory Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cphistory "+ChatColor.WHITE+" para ver el historial de jugador");
+						player.sendMessage(ChatColor.GOLD+"/chistory "+ChatColor.WHITE+"<Usuario>");
+					}
+					if(args[0].equalsIgnoreCase("jail")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Jail Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"para encarcelar a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("unjail")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura UnJail Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					if(args[0].equalsIgnoreCase("jailmute")){
+						player.sendMessage(ChatColor.YELLOW+"---- Censura Jail & Mute Help ----");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"<Usuario> <Razon>");
+					}
+					
+				}else{
+					player.sendMessage(ChatColor.WHITE+ "Usa "+ChatColor.GOLD+"/censura Help "+ChatColor.WHITE+"para obtener ayuda");
+				}
+			}
+			return true;
+		}
 		if(commandLabel.equalsIgnoreCase("cjail")){
 			if(args.length<4){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
