@@ -3,9 +3,9 @@ package com.craftcostaserver.jailrules.censura;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -27,9 +27,24 @@ public class Censura extends JavaPlugin{
 		if(!tableExists()){
 			//create table 
 			String table="CREATE TABLE censura ("
-					+ "datime DATETIME NOT NULL,"
-					+ "playerName VARCHAR(17),"
-					+ "Celda";
+					+ "dateTime DATETIME NOT NULL,"
+					+ "playerName VARCHAR(17) NOT NULL,"
+					+ "sanction VARCHAR(15) NOT NULL,"
+					+ "jail      VARCHAR(5) NOT NULL,"
+					+ "duration VARCHAR(5) NOT NULL,"
+					+ "expired BOOLEAN NOT NULL,"
+					+ "reason VARCHAR(30) NOT NULL,"
+					+ "authoredBy VARCHAR(17) NOT NULL,PRIMARY KEY (`dateTime`))";
+			try {
+				Statement sttmt=con.createStatement();
+				sttmt.executeUpdate(table);
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				logger.info("[Censura] An error occured on Table Creation");
+				e.printStackTrace();
+			}
+			logger.info("[Censura] Table Censura created!!!");
 		}
 	}
 	
