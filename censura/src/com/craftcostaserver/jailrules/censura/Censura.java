@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -169,17 +170,17 @@ public class Censura extends JavaPlugin{
 					if(args[0].equalsIgnoreCase("jail")){
 						player.sendMessage(ChatColor.YELLOW+"---- Censura Jail Help ----");
 						player.sendMessage("Usa "+ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"para encarcelar a un jugador");
-						player.sendMessage(ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"<Usuario> <Razon>");
+						player.sendMessage(ChatColor.GOLD+"/cjail "+ChatColor.WHITE+"<Usuario> <Celda> <Duracion> <Razon>");
 					}
 					if(args[0].equalsIgnoreCase("unjail")){
 						player.sendMessage(ChatColor.YELLOW+"---- Censura UnJail Help ----");
-						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
-						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"<Usuario> <Razon>");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cunjail "+ChatColor.WHITE+"para sacar de la carcel a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cunjail "+ChatColor.WHITE+"<Usuario> <Razon>");
 					}
 					if(args[0].equalsIgnoreCase("jailmute")){
 						player.sendMessage(ChatColor.YELLOW+"---- Censura Jail & Mute Help ----");
-						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
-						player.sendMessage(ChatColor.GOLD+"/ctempban "+ChatColor.WHITE+"<Usuario> <Razon>");
+						player.sendMessage("Usa "+ChatColor.GOLD+"/cjailmute "+ChatColor.WHITE+"para encarcelar y mutear a un jugador");
+						player.sendMessage(ChatColor.GOLD+"/cjailmute "+ChatColor.WHITE+"<Usuario> <Celda> <Duracion> <Razon>");
 					}
 					
 				}else{
@@ -353,7 +354,7 @@ public class Censura extends JavaPlugin{
 					aux+=args[i]+" ";
 				}
 				if(player.performCommand("unmute "+ args[0])){
-					player.sendMessage(ChatColor.RED + "Muteaste temporalmente a: "+ ChatColor.WHITE+ args[0]);
+					player.sendMessage(ChatColor.RED + "Desmuteaste a: "+ ChatColor.WHITE+ args[0]);
 					player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 				}else{
 					player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
@@ -404,24 +405,54 @@ public class Censura extends JavaPlugin{
 		}
 		
 		if(commandLabel.equalsIgnoreCase("cphistory")){
-			if(args.length<2){
+			int totalPaginas=0;
+			int paginaActual=0;
+			if(args.length<1){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
 				return false;
+			}else if(args.length==1){
+				Player obj=Bukkit.getPlayer(args[0]);
+				if(obj.hasPlayedBefore()){
+					player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
+					//Realizar consulta
+					//calcular totalpaginas
+					player.sendMessage(ChatColor.YELLOW+"---- Pagina 0/"+totalPaginas+" ----");
+					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
+				}else{
+					player.sendMessage(ChatColor.RED+"[Censura] El jugador no existe.");
+					return false;
+				}
+			}else if(args.length==2){
+				if (isInteger(args[1])  ) {	
+					player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----");
+					//Realizar consulta
+					//calcular totalPaginas y paginaActual
+					player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
+					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
+				}else{
+					player.sendMessage(ChatColor.RED + "El argumento debe ser un numero entero");
+					return false;
+				}
 			}else{
-				player.sendMessage(ChatColor.RED + "Muteaste temporalmente a: "+ ChatColor.WHITE+ args[0]);
-				player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-				return true;
+				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+				return false;
 			}
+			return true;
 		}
 		
 		if(commandLabel.equalsIgnoreCase("chistory")){
 			if(args.length==0){
+				player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
 				//Shows first history page
 				//how many records have to be shown per page
+				
 				
 			}else if (args.length==1){
 				if (isInteger(args[0])  ) {	
 					//Check if the page is out of range else show page
+				}else{
+					player.sendMessage(ChatColor.RED + "El argumento debe ser un numero entero");
+					return false;
 				}
 			}else{
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");

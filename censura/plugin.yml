@@ -3,6 +3,9 @@ main: com.craftcostaserver.jailrules.censura.Censura
 version: 0.1
 description: Plugin de castigos
 commands:
+  censura:
+    description: Usa /censura help para obtener ayuda
+    usage: /<command> o /<command> help
   cjail:
     description: Usa /cjail para encarcelar a un jugador
     usage: /<command> <jugador> <celda> <tiempo> <razon>
@@ -38,7 +41,7 @@ commands:
     usage: /<command> <jugador> <celda> <tiempo> <razon>
   cphistory:
     description: Usa /cphistory para ver el historial de castigos de un jugador
-    usage: /<command> <jugador>
+    usage: /<command> <jugador> <pagina>
   chistory:
     description: Usa /chistory para mostrar el historial de castigos
-    usage: /<command> <page>
+    usage: /<command> <pagina>
