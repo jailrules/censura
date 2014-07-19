@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -199,12 +201,23 @@ public class Censura extends JavaPlugin{
 			}else{
 				if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2])){
 					for(int i=3;i<args.length;i++){
-						aux+=args[i]+" ";
+						aux+=" "+args[i];
 					}
 					player.sendMessage(ChatColor.RED + "Encarcelando a: "+ ChatColor.WHITE+ args[0]);
 					player.sendMessage(ChatColor.RED + "Celda: "+ ChatColor.WHITE +args[1]);
 					player.sendMessage(ChatColor.RED + "Duracion: "+ ChatColor.WHITE +args[2]);
 					player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+					Date now = new Date();
+					Timestamp timestamp = new Timestamp(now.getTime());
+					
+					String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+							+"VALUES (NOW(),'"+args[0]+"','jail','"+args[1]+"','"+args[2]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
+					if(insertar(sql)){
+						player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente");
+					}else{
+						player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo");
+						return false;
+					}
 				}else{
 					player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
 					return false;
@@ -505,6 +518,7 @@ public class Censura extends JavaPlugin{
 			sttmt.close();
 		} catch (SQLException e) {
 			this.logger.info("[Censura] Error al intentar ejecutar la operacion de insertar en la base de datos");
+			e.printStackTrace();
 			return false;
 		}
 		return true;
