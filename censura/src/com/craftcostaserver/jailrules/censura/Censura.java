@@ -7,9 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -20,14 +18,28 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.earth2me.essentials.IEssentials;
+
+
 public class Censura extends JavaPlugin{
 	public static Censura plugin;
+	public IEssentials ess;
+	
 	public final Logger logger = Logger.getLogger("Minecraft");
 	private static Connection con=null;
 	@Override
 	public void onEnable(){
 		PluginDescriptionFile pdffile=this.getDescription();
 		this.logger.info(pdffile.getName() + " Version " + pdffile.getVersion() + "Ha sido habilitado.");
+		
+		ess = (IEssentials) getServer().getPluginManager().getPlugin("Essentials");
+		   
+        if(ess != null){
+        	System.out.print("Essentials found");
+        }
+        else{
+            System.out.print("Essentials not found");
+        }
 		openConnection();
 		if(!tableExists()){
 			//create table 
@@ -100,6 +112,8 @@ public class Censura extends JavaPlugin{
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[]){
 		Player player= (Player) sender;
 		String aux="";
+		
+		
 		if(commandLabel.equalsIgnoreCase("censura")){
 			if(args.length==0){
 				player.sendMessage(ChatColor.WHITE+ "Usa "+ChatColor.GOLD+"/censura Help "+ChatColor.WHITE+"para obtener ayuda");
@@ -199,27 +213,37 @@ public class Censura extends JavaPlugin{
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
 				return false;
 			}else{
-				if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2])){
-					for(int i=3;i<args.length;i++){
-						aux+=" "+args[i];
-					}
-					player.sendMessage(ChatColor.RED + "Encarcelando a: "+ ChatColor.WHITE+ args[0]);
-					player.sendMessage(ChatColor.RED + "Celda: "+ ChatColor.WHITE +args[1]);
-					player.sendMessage(ChatColor.RED + "Duracion: "+ ChatColor.WHITE +args[2]);
-					player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-					Date now = new Date();
-					Timestamp timestamp = new Timestamp(now.getTime());
-					
-					String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
-							+"VALUES (NOW(),'"+args[0]+"','jail','"+args[1]+"','"+args[2]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
-					if(insertar(sql)){
-						player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente");
+				try{
+					//si joder siiiii
+					if(ess.getUserMap().getUser(args[0]) != null){
+						System.out.println("[Censura] Usuario "+args[0]+" existe.");
+						
 					}else{
-						player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo");
+						System.out.println("[Censura] Usuario no existe");
 						return false;
 					}
-				}else{
-					player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+					if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2])){
+							for(int i=3;i<args.length;i++){
+								aux+=" "+args[i];
+							}
+							player.sendMessage(ChatColor.RED + "Encarcelando a: "+ ChatColor.WHITE+ args[0]);
+							player.sendMessage(ChatColor.RED + "Celda: "+ ChatColor.WHITE +args[1]);
+							player.sendMessage(ChatColor.RED + "Duracion: "+ ChatColor.WHITE +args[2]);
+							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+									+"VALUES (NOW(),'"+args[0]+"','jail','"+args[1]+"','"+args[2]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
+							if(insertar(sql)){
+								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente");
+							}else{
+								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo");
+								return false;
+							}
+						}else{
+							player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+							return false;
+						}
+				}catch(Exception e){
+					e.printStackTrace();
 					return false;
 				}
 				return true;
@@ -510,7 +534,6 @@ public class Censura extends JavaPlugin{
 		}		
 		return null;
 	}
-	
 	public synchronized boolean insertar(String op){		
 		try {
 			Statement sttmt= con.createStatement();

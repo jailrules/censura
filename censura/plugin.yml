@@ -2,6 +2,7 @@ name: censura
 main: com.craftcostaserver.jailrules.censura.Censura
 version: 0.1
 description: Plugin de castigos
+depend: [Essentials]
 commands:
   censura:
     description: Usa /censura help para obtener ayuda
