@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,22 +23,22 @@ import com.earth2me.essentials.IEssentials;
 public class Censura extends JavaPlugin{
 	public static Censura plugin;
 	public IEssentials ess;
-	
+
 	public final Logger logger = Logger.getLogger("Minecraft");
 	private static Connection con=null;
 	@Override
 	public void onEnable(){
 		PluginDescriptionFile pdffile=this.getDescription();
 		this.logger.info(pdffile.getName() + " Version " + pdffile.getVersion() + "Ha sido habilitado.");
-		
+
 		ess = (IEssentials) getServer().getPluginManager().getPlugin("Essentials");
-		   
-        if(ess != null){
-        	System.out.print("Essentials found");
-        }
-        else{
-            System.out.print("Essentials not found");
-        }
+
+		if(ess != null){
+			System.out.print("Essentials found");
+		}
+		else{
+			System.out.print("Essentials not found");
+		}
 		openConnection();
 		if(!tableExists()){
 			//create table 
@@ -55,7 +54,7 @@ public class Censura extends JavaPlugin{
 			try {
 				Statement sttmt=con.createStatement();
 				sttmt.executeUpdate(table);
-				
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				logger.info("[Censura] An error occured on Table Creation");
@@ -64,12 +63,12 @@ public class Censura extends JavaPlugin{
 			logger.info("[Censura] Table Censura created!!!");
 		}
 	}
-	
+
 	@Override
 	public void onDisable(){
 		try {
 			if(con!=null && !con.isClosed()){
-					con.close();
+				con.close();
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -79,7 +78,7 @@ public class Censura extends JavaPlugin{
 		PluginDescriptionFile pdffile=this.getDescription();
 		this.logger.info(pdffile.getName() + " Se ha deshabilitado.");
 	}
-	
+
 	public synchronized static void openConnection(){
 		try {
 			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/prueba","root","");
@@ -88,7 +87,7 @@ public class Censura extends JavaPlugin{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized static boolean tableExists(){
 		try {
 			DatabaseMetaData dbm=con.getMetaData();
@@ -104,16 +103,16 @@ public class Censura extends JavaPlugin{
 		}
 		//Check if table exists
 		return false;
-		
 
-				
+
+
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[]){
 		Player player= (Player) sender;
 		String aux="";
-		
-		
+
+
 		if(commandLabel.equalsIgnoreCase("censura")){
 			if(args.length==0){
 				player.sendMessage(ChatColor.WHITE+ "Usa "+ChatColor.GOLD+"/censura Help "+ChatColor.WHITE+"para obtener ayuda");
@@ -135,7 +134,7 @@ public class Censura extends JavaPlugin{
 						player.sendMessage(ChatColor.GOLD+"/chistory "+ChatColor.WHITE+"Usa /censura history Para mas informacion");
 						player.sendMessage(ChatColor.GOLD+"/cphistory "+ChatColor.WHITE+"Usa /censura phistory Para mas informacion");
 					}
-					
+
 					if(args[0].equalsIgnoreCase("ban")){
 						player.sendMessage(ChatColor.YELLOW+"---- Censura Ban Help ----");
 						player.sendMessage("Usa "+ChatColor.GOLD+"/cban "+ChatColor.WHITE+"para banear a un jugador");
@@ -201,7 +200,7 @@ public class Censura extends JavaPlugin{
 						player.sendMessage("Usa "+ChatColor.GOLD+"/cjailmute "+ChatColor.WHITE+"para encarcelar y mutear a un jugador");
 						player.sendMessage(ChatColor.GOLD+"/cjailmute "+ChatColor.WHITE+"<Usuario> <Celda> <Duracion> <Razon>");
 					}
-					
+
 				}else{
 					player.sendMessage(ChatColor.WHITE+ "Usa "+ChatColor.GOLD+"/censura Help "+ChatColor.WHITE+"para obtener ayuda");
 				}
@@ -246,7 +245,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cunjail")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -284,7 +283,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("ckick")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -321,7 +320,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("ctempban")){
 			if(args.length<3){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -359,7 +358,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cban")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -397,7 +396,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cunban")){
 			if(args.length<4){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -435,7 +434,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cmute")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -473,7 +472,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("ctempmute")){
 			if(args.length<3){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -549,7 +548,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cwarn")){
 			if(args.length<2){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -586,7 +585,7 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		
+
 		if(commandLabel.equalsIgnoreCase("cjailmute")){
 			if(args.length<4){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
@@ -625,53 +624,84 @@ public class Censura extends JavaPlugin{
 				return true;
 			}
 		}
-		/*
-		 * SELECT * FROM `censura` ORDER BY `censura`.`dateTime` DESC
-		 */
+
+
 		if(commandLabel.equalsIgnoreCase("cphistory")){
+			int lineas=0;
 			int totalPaginas=0;
 			int paginaActual=0;
+			ArrayList<String> res= new ArrayList<String>();
 			if(args.length<1){
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
 				return false;
-			}else if(args.length==1){
-				try {
+			}else{
+				if(usuarioExiste(args[0])){
+					try{
 						//Realizar consulta
-						PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` WHERE playerName=?;");
+						PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` WHERE playerName=? ORDER BY `censura`.`dateTime` DESC");
 						sql.setString(1, args[0]);
 						ResultSet rs= sql.executeQuery();
-						//calcular totalpaginas
-						if(rs.next()){
-							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
-							
-							
-							player.sendMessage(ChatColor.YELLOW+"---- Pagina 0/"+totalPaginas+" ----");
-							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
-						}
-						else{
-							
+						res=consulta(rs);
+						//calcular totalpaginas, lineas, paginaactual=0;
+						lineas=res.size();
+						if(lineas==0){
+							totalPaginas=0;
+						}else{
+							totalPaginas=((int)lineas/5)+1;
 						}
 						sql.close();
 						rs.close();
-					} catch (SQLException e) {
+					}catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-			}else if(args.length==2){
-				if (isInteger(args[1])  ) {	
-					player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----");
-					//Realizar consulta
-					//calcular totalPaginas y paginaActual
-					player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
-					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
+					if(totalPaginas==0){
+						player.sendMessage("[Censura] El usuario no tiene ningun castigo.");
+						return false;
+					}else{
+						if(args.length==1){
+							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
+							int j=0;
+							while(!res.get(j).isEmpty() && j<5){
+								player.sendMessage(res.get(j));
+								j++;
+							}
+							player.sendMessage(ChatColor.YELLOW+"---- Pagina 1/"+totalPaginas+" ----");
+							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
+						}
+						if(args.length==2){
+							if(isInteger(args[1])){
+								if(Integer.parseInt(args[1])>totalPaginas || Integer.parseInt(args[1])<1){
+									player.sendMessage("[Censura] Pagina fuera de rango");
+									return false;
+								}else{
+									paginaActual=Integer.parseInt(args[1]);
+									player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
+									int j=(paginaActual-1)*5;
+									while(!res.get(j).isEmpty() && j<(paginaActual-1)*5+5){
+										player.sendMessage(res.get(j));
+										j++;
+									}
+									player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
+									player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
+								}
+
+							}else{
+								player.sendMessage("[Censura] Segundo Argumento incorrecto!! Debe ser un numero de pagina valido");
+								return false;
+							}
+						}else{
+							player.sendMessage("[Censura] Demasiados argumentos!!");
+							return false;
+						}
+
+					}
+
 				}else{
-					player.sendMessage(ChatColor.RED + "El argumento debe ser un numero entero");
+					player.sendMessage("[Censura] Usuario no existe");
 					return false;
 				}
-			}else{
-				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
-				return false;
-			}
+			} 
 			return true;
 		}
 		/*
@@ -680,30 +710,71 @@ public class Censura extends JavaPlugin{
 		if(commandLabel.equalsIgnoreCase("chistory")){
 			int totalPaginas=0;
 			int paginaActual=0;
-			if(args.length==0){
-				player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
-				//Shows first history page
-				//how many records have to be shown per page
-				
-				player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
-				player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
-			}else if (args.length==1){
-				if (isInteger(args[0])  ) {	
-					//Check if the page is out of range else show page
+			int lineas=0;
+			ArrayList<String> res= new ArrayList<String>();
+			try{
+				//Realizar consulta
+				PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` ORDER BY `censura`.`dateTime` DESC");
+				sql.setString(1, args[0]);
+				ResultSet rs= sql.executeQuery();
+				res=consulta(rs);
+				//calcular totalpaginas, lineas, paginaactual=0;
+				lineas=res.size();
+				if(lineas==0){
+					totalPaginas=0;
 				}else{
-					player.sendMessage(ChatColor.RED + "El argumento debe ser un numero entero");
+					totalPaginas=((int)lineas/5)+1;
+				}
+				sql.close();
+				rs.close();
+			}catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(totalPaginas==0){
+				player.sendMessage("[Censura] El usuario no tiene ningun castigo.");
+				return false;
+			}else{
+				if(args.length==0){
+					player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
+					//Shows first history page
+					int j=0;
+					while(!res.get(j).isEmpty() && j<5){
+						player.sendMessage(res.get(j));
+						j++;
+					}
+					player.sendMessage(ChatColor.YELLOW+"---- Pagina 1/"+totalPaginas+" ----");
+					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas del historial");
+				}else if (args.length==1){
+					if(isInteger(args[0])){
+						if(Integer.parseInt(args[1])>totalPaginas || Integer.parseInt(args[1])<1){
+							player.sendMessage("[Censura] Pagina fuera de rango");
+							return false;
+						}else{
+							paginaActual=Integer.parseInt(args[0]);
+							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
+							int j=(paginaActual-1)*5;
+							while(!res.get(j).isEmpty() && j<(paginaActual-1)*5+5){
+								player.sendMessage(res.get(j));
+								j++;
+							}
+							player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
+							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas del historial");
+						}						
+					}else{
+						player.sendMessage("[Censura] Primer Argumento incorrecto!! Debe ser un numero de pagina valido");
+						return false;
+					}
+				}else{
+					player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
 					return false;
 				}
-			}else{
-				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
-				return false;
 			}
 			return true;
 		}
-		
 		return false;
 	}
-	
+
 	public boolean usuarioExiste(String playerName){
 		if(ess.getUserMap().getUser(playerName)!=null){
 			return true;
@@ -712,12 +783,12 @@ public class Censura extends JavaPlugin{
 			return false;
 		}
 	}
-	
+
 	public static ArrayList<String> consulta(ResultSet rs){
-		ArrayList<String> cnsta=new ArrayList<>();
+		ArrayList<String> cnsta=new ArrayList<String>();
 		try {
 			while(rs.next()){
-				cnsta.add(new String(rs.getString("dateTime")+" "+rs.getString("playerName")+" "+rs.getString("sanction")+" "+rs.getString("duration")+" "+rs.getString("reason")+rs.getString("Expired")+" "+rs.getString("authoredBy")));				
+				cnsta.add(new String(rs.getString("dateTime")+" "+rs.getString("playerName")+" "+rs.getString("sanction")+" "+rs.getString("duration")+" "+rs.getString("reason")+rs.getString("expired")+" "+rs.getString("authoredBy")));				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -737,18 +808,18 @@ public class Censura extends JavaPlugin{
 		}
 		return true;
 	}
-	
+
 	public static int contarFilas(ResultSet rs){
 		return 1;
 	}
-	
+
 	public static boolean isInteger(String s) {
-	    try { 
-	        Integer.parseInt(s); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    return true;
+		try { 
+			Integer.parseInt(s); 
+		} catch(NumberFormatException e) { 
+			return false; 
+		}
+		return true;
 	}
 }
 
