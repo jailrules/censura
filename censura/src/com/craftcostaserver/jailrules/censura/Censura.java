@@ -23,7 +23,6 @@ import com.earth2me.essentials.IEssentials;
 public class Censura extends JavaPlugin{
 	public static Censura plugin;
 	public IEssentials ess;
-
 	public final Logger logger = Logger.getLogger("Minecraft");
 	private static Connection con=null;
 	@Override
@@ -103,9 +102,6 @@ public class Censura extends JavaPlugin{
 		}
 		//Check if table exists
 		return false;
-
-
-
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String args[]){

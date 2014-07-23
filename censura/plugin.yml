@@ -46,3 +46,8 @@ commands:
   chistory:
     description: Usa /chistory para mostrar el historial de castigos
     usage: /<command> <pagina>
+
+permissions:
+  censura.*:
+    default: op
+    description: Give players with op everything by default
