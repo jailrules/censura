@@ -40,6 +40,9 @@ commands:
   cjailmute:
     description: Usa /cjailmute para encarcelar y mutear temporalmente a un jugador
     usage: /<command> <jugador> <celda> <tiempo> <razon>
+  cunjailmute:
+    description: Usa /cjailmute para encarcelar y mutear temporalmente a un jugador
+    usage: /<command> <jugador> <razon>
   cphistory:
     description: Usa /cphistory para ver el historial de castigos de un jugador
     usage: /<command> <jugador> <pagina>
@@ -49,5 +52,13 @@ commands:
 
 permissions:
   censura.*:
+    description: Give players with op everything by default with DDBB manage
+    children:
+      censura.admin: true
+  censura.admin:
+    description: Give players with admin ban unban by default and all sacntions
+    children:
+      censura.mod: true
+  censura.mod:
+    description: Give players with mod rest of sanctions by default
     default: op
-    description: Give players with op everything by default

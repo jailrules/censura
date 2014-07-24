@@ -18,6 +18,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 
 
 public class Censura extends JavaPlugin{
@@ -208,7 +209,7 @@ public class Censura extends JavaPlugin{
 				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
 				return false;
 			}else{
-				try{
+				try{					
 					if(usuarioExiste(args[0])){
 						if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2])){
 							for(int i=3;i<args.length;i++){
@@ -220,9 +221,7 @@ public class Censura extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
 									+"VALUES (NOW(),'"+args[0]+"','jail','"+args[1]+"','"+args[2]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente");
-							}else{
+							if(!insertar(sql)){
 								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo");
 								return false;
 							}
@@ -248,25 +247,32 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				try{
+					User user=ess.getUserMap().getUser(args[0]);
 					if(usuarioExiste(args[0])){
-						if(player.performCommand("unjail "+ args[0])){
-							for(int i=1;i<args.length;i++){
-								aux+=args[i]+" ";
-							}
-							player.sendMessage(ChatColor.RED + "Desencarcelando a: "+ ChatColor.WHITE+ args[0]);
-							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
-									+"VALUES (NOW(),'"+args[0]+"','unjail','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
+						if(user.isJailed()){
+							if(player.performCommand("unjail "+ args[0])){
+								for(int i=1;i<args.length;i++){
+									aux+=args[i]+" ";
+								}
+								player.sendMessage(ChatColor.RED + "Desencarcelando a: "+ ChatColor.WHITE+ args[0]);
+								player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+								String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+										+"VALUES (NOW(),'"+args[0]+"','unjail','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+									return false;
+								}
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='jail' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo anterior.");
+									return false;
+								}
 							}else{
-								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+								player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
 								return false;
 							}
-							//ACTUALIZAR FILAS ANTERIORES DEL MISMO JUGADOR
 						}else{
-							player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
-							return false;
+							player.sendMessage(ChatColor.RED+"[Censura] Usuario no esta encarcelado!!");
 						}
 					}else{
 						player.sendMessage("[Censura] Usuario no existe");
@@ -333,9 +339,7 @@ public class Censura extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
 									+"VALUES (NOW(),'"+args[0]+"','tempban','NC','"+args[1]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
-							}else{
+							if(!insertar(sql)){
 								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
 								return false;
 							}
@@ -361,8 +365,7 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				try{
-					if(usuarioExiste(args[0])){	
-
+					if(usuarioExiste(args[0])){
 						for(int i=1;i<args.length;i++){
 							aux+=args[i]+" ";
 						}
@@ -371,9 +374,7 @@ public class Censura extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
 									+"VALUES (NOW(),'"+args[0]+"','ban','NC','NC',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
-							}else{
+							if(!insertar(sql)){
 								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
 								return false;
 							}
@@ -399,24 +400,38 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				try{
+					User user=ess.getUserMap().getUser(args[0]);
 					if(usuarioExiste(args[0])){
-						for(int i=3;i<args.length;i++){
-							aux+=args[i]+" ";
-						}
-						if(player.performCommand("unban "+ args[0])){
-							player.sendMessage(ChatColor.RED + "Desbaneando a: "+ ChatColor.WHITE+ args[0]);
-							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
-									+"VALUES (NOW(),'"+args[0]+"','unban','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
+						if(user.isBanned()){
+							for(int i=3;i<args.length;i++){
+								aux+=args[i]+" ";
+							}
+							if(player.performCommand("unban "+ args[0])){
+								player.sendMessage(ChatColor.RED + "Desbaneando a: "+ ChatColor.WHITE+ args[0]);
+								player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+								String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+										+"VALUES (NOW(),'"+args[0]+"','unban','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+									return false;
+								}
+								//ACTUALIZAR FILAS ANTERIORES DEL MISMO JUGADOR
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='ban' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo anterior.");
+									return false;
+								}
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='tempban' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo temporal anterior.");
+									return false;
+								}
 							}else{
-								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+								player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
 								return false;
 							}
-							//ACTUALIZAR FILAS ANTERIORES DEL MISMO JUGADOR
 						}else{
-							player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+							player.sendMessage(ChatColor.RED + "[Censura] El usuario no esta baneado!");
 							return false;
 						}
 					}else{
@@ -437,24 +452,29 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				try{
+					User user=ess.getUserMap().getUser(args[0]);
 					if(usuarioExiste(args[0])){	
-
-						for(int i=1;i<args.length;i++){
-							aux+=args[i]+" ";
-						}
-						if(player.performCommand("mute "+ args[0])){
-							player.sendMessage(ChatColor.RED + "Muteaste a: "+ ChatColor.WHITE+ args[0]);
-							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
-									+"VALUES (NOW(),'"+args[0]+"','mute','NC','NC',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
+						if(!user.isMuted()){
+							for(int i=1;i<args.length;i++){
+								aux+=args[i]+" ";
+							}
+							if(player.performCommand("mute "+ args[0])){
+								player.sendMessage(ChatColor.RED + "Muteaste a: "+ ChatColor.WHITE+ args[0]);
+								player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+								String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+										+"VALUES (NOW(),'"+args[0]+"','mute','NC','NC',"+"0,'"+aux+"','"+sender.getName()+"')";
+								if(insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
+								}else{
+									player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+									return false;
+								}
 							}else{
-								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+								player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
 								return false;
 							}
 						}else{
-							player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+							player.sendMessage("[Censura] El Usuario ya esta muteado!!");
 							return false;
 						}
 					}else{
@@ -479,7 +499,7 @@ public class Censura extends JavaPlugin{
 						for(int i=2;i<args.length;i++){
 							aux+=args[i]+" ";
 						}
-						if(player.performCommand("tempmute "+ args[0] + " " + args[1] + " " + aux)){
+						if(player.performCommand("mute "+ args[0] + " " +args[1])){
 							player.sendMessage(ChatColor.RED + "Muteaste temporalmente a: "+ ChatColor.WHITE+ args[0]);
 							player.sendMessage(ChatColor.RED + "Duracion: "+ ChatColor.WHITE+ args[1]);
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
@@ -513,28 +533,41 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				try{
+					User user=ess.getUserMap().getUser(args[0]);
 					if(usuarioExiste(args[0])){
-						for(int i=1;i<args.length;i++){
-							aux+=args[i]+" ";
-						}
-						if(player.performCommand("unmute "+ args[0])){
-							player.sendMessage(ChatColor.RED + "Desmuteaste a: "+ ChatColor.WHITE+ args[0]);
-							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
-							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
-									+"VALUES (NOW(),'"+args[0]+"','unmute','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
+						if(user.isMuted()){
+							for(int i=1;i<args.length;i++){
+								aux+=args[i]+" ";
+							}
+							if(player.performCommand("mute "+ args[0])){
+								player.sendMessage(ChatColor.RED + "Desmuteaste a: "+ ChatColor.WHITE+ args[0]);
+								player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+								String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+										+"VALUES (NOW(),'"+args[0]+"','unmute','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+									return false;
+								}
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='mute' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo anterior.");
+									return false;
+								}
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='tempmute' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo anterior.");
+									return false;
+								}
 							}else{
-								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+								player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
 								return false;
 							}
-							//ACTUALIZAR FILAS ANTERIORES DEL MISMO JUGADOR
 						}else{
-							player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+							player.sendMessage(ChatColor.RED+"[Censura] Usuario no esta muteado!");
 							return false;
 						}
 					}else{
-						player.sendMessage("[Censura] Usuario no existe");
+						player.sendMessage(ChatColor.RED+"[Censura] Usuario no existe!");
 						return false;
 					}
 				}catch(Exception e){
@@ -560,9 +593,7 @@ public class Censura extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
 									+"VALUES (NOW(),'"+args[0]+"','warn','NC','NC',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
-							}else{
+							if(!insertar(sql)){
 								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
 								return false;
 							}
@@ -571,7 +602,7 @@ public class Censura extends JavaPlugin{
 							return false;
 						}
 					}else{
-						player.sendMessage("[Censura] Usuario no existe");
+						player.sendMessage(ChatColor.RED+"[Censura] Usuario no existe");
 						return false;
 					}
 				}catch (Exception e) {
@@ -589,7 +620,7 @@ public class Censura extends JavaPlugin{
 			}else{
 				try{
 					if(usuarioExiste(args[0])){
-						if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2]) && player.performCommand("tempmute "+ args[0] + " " +args[2]+ " " + aux)){
+						if(player.performCommand("jail "+ args[0] + " " + args[1] + " " +args[2]) && player.performCommand("mute "+ args[0] + " " +args[2])){
 							for(int i=3;i<args.length;i++){
 								aux+=args[i]+" ";
 							}
@@ -599,9 +630,7 @@ public class Censura extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
 							String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
 									+"VALUES (NOW(),'"+args[0]+"','jailmute','"+args[1]+"','"+args[2]+"',"+"0,'"+aux+"','"+sender.getName()+"')";
-							if(insertar(sql)){
-								player.sendMessage(ChatColor.RED+"[Censura] Datos guardados correctamente.");
-							}else{
+							if(!insertar(sql)){
 								player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
 								return false;
 							}
@@ -610,7 +639,7 @@ public class Censura extends JavaPlugin{
 							return false;
 						}
 					}else{
-						player.sendMessage("[Censura] Usuario no existe");
+						player.sendMessage(ChatColor.RED+"[Censura] Usuario no existe");
 						return false;
 					}
 				}catch (Exception e) {
@@ -621,6 +650,51 @@ public class Censura extends JavaPlugin{
 			}
 		}
 
+		if(commandLabel.equalsIgnoreCase("cunjailmute")){
+			if(args.length<1){
+				player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+				return false;
+			}else{
+				try{
+					if(usuarioExiste(args[0])){
+						User user=ess.getUserMap().getUser(args[0]);
+						if (user.isMuted() && user.isJailed()){
+							if(player.performCommand("unjail "+ args[0]) && player.performCommand("mute "+ args[0])){
+								for(int i=1;i<args.length;i++){
+									aux+=args[i]+" ";
+								}
+								player.sendMessage(ChatColor.RED + "Desencarcelando y desmuteando a: "+ ChatColor.WHITE+ args[0]);
+								player.sendMessage(ChatColor.RED + "Razon: "+ ChatColor.WHITE +aux);
+								String sql="INSERT INTO `censura` (`dateTime`,`playerName`,`sanction`,`jail`,`duration`,`expired`,`reason`,`authoredBy`) "
+										+"VALUES (NOW(),'"+args[0]+"','unjailmute','NC','NC',"+"1,'"+aux+"','"+sender.getName()+"')";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al guardar el castigo.");
+									return false;
+								}
+								sql="UPDATE `censura` SET `expired`=1 WHERE `sanction`='jailmute' AND `playerName`='"+args[0]+"'";
+								if(!insertar(sql)){
+									player.sendMessage(ChatColor.RED+"[Censura] Error al actualizar castigo anterior.");
+									return false;
+								}
+							}else{
+								player.sendMessage(ChatColor.RED + "[Censura] Argumentos incorrectos!! Revisa los datos introducidos.");
+								return false;
+							}
+						}else{
+							player.sendMessage(ChatColor.RED+"[Censura] Usuario no esta encarcelado y/o muteado");
+							return false;
+						}
+					}else{
+						player.sendMessage(ChatColor.RED+"[Censura] Usuario no existe");
+						return false;
+					}
+				}catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+				return true;
+			}
+		}
 
 		if(commandLabel.equalsIgnoreCase("cphistory")){
 			int lineas=0;
@@ -638,7 +712,6 @@ public class Censura extends JavaPlugin{
 						sql.setString(1, args[0]);
 						ResultSet rs= sql.executeQuery();
 						res=consulta(rs);
-						//calcular totalpaginas, lineas, paginaactual=0;
 						lineas=res.size();
 						if(lineas==0){
 							totalPaginas=0;
@@ -700,14 +773,16 @@ public class Censura extends JavaPlugin{
 			} 
 			return true;
 		}
-		/*
-		 * SELECT * FROM `censura` ORDER BY `censura`.`dateTime` DESC
-		 */
+
+		if(commandLabel.equalsIgnoreCase("cppurge")){
+
+		}
+
 		if(commandLabel.equalsIgnoreCase("chistory")){
 			int totalPaginas=0;
 			int paginaActual=0;
 			int lineas=0;
-			ArrayList<String> res= new ArrayList<String>();
+			ArrayList<String> res=null;
 			try{
 				//Realizar consulta
 				PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` ORDER BY `censura`.`dateTime` DESC");
