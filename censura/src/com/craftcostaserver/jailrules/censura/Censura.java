@@ -707,7 +707,6 @@ public class Censura extends JavaPlugin{
 			}else{
 				if(usuarioExiste(args[0])){
 					try{
-						//Realizar consulta
 						PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` WHERE playerName=? ORDER BY `censura`.`dateTime` DESC");
 						sql.setString(1, args[0]);
 						ResultSet rs= sql.executeQuery();
@@ -731,7 +730,7 @@ public class Censura extends JavaPlugin{
 						if(args.length==1){
 							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
 							int j=0;
-							while(!res.get(j).isEmpty() && j<5){
+							while(j<res.size() && j<5){
 								player.sendMessage(res.get(j));
 								j++;
 							}
@@ -747,7 +746,7 @@ public class Censura extends JavaPlugin{
 									paginaActual=Integer.parseInt(args[1]);
 									player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
 									int j=(paginaActual-1)*5;
-									while(!res.get(j).isEmpty() && j<(paginaActual-1)*5+5){
+									while(j<res.size() && j<(paginaActual-1)*5+5){
 										player.sendMessage(res.get(j));
 										j++;
 									}
@@ -775,8 +774,69 @@ public class Censura extends JavaPlugin{
 		}
 
 		if(commandLabel.equalsIgnoreCase("cppurge")){
-
+			if(player.hasPermission("censura.*")){
+				if(args.length<1){
+					player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+					return false;
+				}else{
+					User user=ess.getUserMap().getUser(args[0]);
+					if(usuarioExiste(args[0])){
+						if(user.isMuted()){
+							player.performCommand("mute "+args[0]);
+						}
+						if(user.isBanned()){
+							player.performCommand("unban "+args[0]);
+						}
+						if(user.isJailed()){
+							player.performCommand("unjail "+args[0]);
+						}
+					}else{
+						player.sendMessage("[Censura] Usuario no existe");
+						return false;
+					}
+				}
+			}else{
+				player.sendMessage(ChatColor.RED+"[censura] Usted no tiene permiso para usar ese comando!");
+			}
+			return true;
 		}
+		
+		if(commandLabel.equalsIgnoreCase("cpurge")){
+			if(player.hasPermission("censura.*")){
+				if(args.length<1){
+					player.sendMessage(ChatColor.RED + "[Censura] Numero de argumentos incorrecto!!");
+					return false;
+				}else{
+					if(isInteger(args[0])){
+						try{
+							String sql="";
+							if(!insertar(sql)){
+								player.sendMessage(ChatColor.RED+"Error al intentar vaciar la tabla");
+							}
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}else if(args[0].equalsIgnoreCase("all")){
+						try{
+							String sql="TRUNCATE TABLE `censura`";
+							if(!insertar(sql)){
+								player.sendMessage(ChatColor.RED+"Error al intentar vaciar la tabla");
+							}
+						}catch(Exception e){
+							e.printStackTrace();
+							
+						}
+					}else{
+						player.sendMessage(ChatColor.RED+"[censura] Argumento incorrecto!!");
+						return false;
+					}
+				}
+			}else{
+				player.sendMessage(ChatColor.RED+"[censura] Usted no tiene permiso para usar ese comando!");
+			}
+			return true;
+		}
+
 
 		if(commandLabel.equalsIgnoreCase("chistory")){
 			int totalPaginas=0;
@@ -786,7 +846,6 @@ public class Censura extends JavaPlugin{
 			try{
 				//Realizar consulta
 				PreparedStatement sql= con.prepareStatement("SELECT * FROM `censura` ORDER BY `censura`.`dateTime` DESC");
-				sql.setString(1, args[0]);
 				ResultSet rs= sql.executeQuery();
 				res=consulta(rs);
 				//calcular totalpaginas, lineas, paginaactual=0;
@@ -801,36 +860,37 @@ public class Censura extends JavaPlugin{
 			}catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				player.sendMessage("[Censura] Error al realizar la consulta del historial.");
 			}
 			if(totalPaginas==0){
-				player.sendMessage("[Censura] El usuario no tiene ningun castigo.");
+				player.sendMessage("[Censura] No existen castigos aplicados.");
 				return false;
 			}else{
 				if(args.length==0){
 					player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
 					//Shows first history page
 					int j=0;
-					while(!res.get(j).isEmpty() && j<5){
+					while(j<res.size() && j<5){
 						player.sendMessage(res.get(j));
 						j++;
 					}
 					player.sendMessage(ChatColor.YELLOW+"---- Pagina 1/"+totalPaginas+" ----");
-					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas del historial");
+					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas.");
 				}else if (args.length==1){
 					if(isInteger(args[0])){
-						if(Integer.parseInt(args[1])>totalPaginas || Integer.parseInt(args[1])<1){
+						if(Integer.parseInt(args[0])>totalPaginas || Integer.parseInt(args[0])<1){
 							player.sendMessage("[Censura] Pagina fuera de rango");
 							return false;
 						}else{
 							paginaActual=Integer.parseInt(args[0]);
 							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
 							int j=(paginaActual-1)*5;
-							while(!res.get(j).isEmpty() && j<(paginaActual-1)*5+5){
+							while(j<res.size() && j<(paginaActual-1)*5+5){
 								player.sendMessage(res.get(j));
 								j++;
 							}
 							player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
-							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas del historial");
+							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas.");
 						}						
 					}else{
 						player.sendMessage("[Censura] Primer Argumento incorrecto!! Debe ser un numero de pagina valido");
@@ -855,17 +915,21 @@ public class Censura extends JavaPlugin{
 		}
 	}
 
-	public static ArrayList<String> consulta(ResultSet rs){
+	public ArrayList<String> consulta(ResultSet rs){
 		ArrayList<String> cnsta=new ArrayList<String>();
 		try {
 			while(rs.next()){
-				cnsta.add(new String(rs.getString("dateTime")+" "+rs.getString("playerName")+" "+rs.getString("sanction")+" "+rs.getString("duration")+" "+rs.getString("reason")+rs.getString("expired")+" "+rs.getString("authoredBy")));				
+				String s=rs.getString("dateTime")+" "+rs.getString("playerName")+" "+rs.getString("sanction")+" "+rs.getString("duration")+" "+rs.getString("reason")+rs.getString("expired")+" "+rs.getString("authoredBy");
+				System.out.println(s);
+				cnsta.add(s);
+				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			this.logger.info("[Censura] Error en consulta a ArrayList.");
 			e.printStackTrace();
 		}		
-		return null;
+		return cnsta;
 	}
 	public synchronized boolean insertar(String op){		
 		try {
@@ -893,4 +957,3 @@ public class Censura extends JavaPlugin{
 		return true;
 	}
 }
-

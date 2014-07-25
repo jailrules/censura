@@ -49,6 +49,13 @@ commands:
   chistory:
     description: Usa /chistory para mostrar el historial de castigos
     usage: /<command> <pagina>
+  cpurge:
+    description: Usa /cpurge para purgar los registros de la base de datos
+    usage: /<command> <dias>
+  cppurge:
+    description: Usa /cppuerge para purgar los registro de un usuario concreto
+    usage: /<command> <jugador>
+  
 
 permissions:
   censura.*:
