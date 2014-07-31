@@ -733,13 +733,13 @@ public class Censura extends JavaPlugin{
 						return false;
 					}else{
 						if(args.length==1){
-							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
+							player.sendMessage(ChatColor.YELLOW+"------------- Historial de castigos de "+args[0]+" ---------"); 
 							int j=0;
 							while(j<res.size() && j<5){
 								player.sendMessage(res.get(j));
 								j++;
 							}
-							player.sendMessage(ChatColor.YELLOW+"---- Pagina 1/"+totalPaginas+" ----");
+							player.sendMessage(ChatColor.YELLOW+"-------------------     Pagina 1/"+totalPaginas+"    ------------------");
 							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
 						}else if(args.length==2){
 							if(isInteger(args[1])){
@@ -748,13 +748,13 @@ public class Censura extends JavaPlugin{
 									return false;
 								}else{
 									paginaActual=Integer.parseInt(args[1]);
-									player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos de "+args[0]+" ----"); 
+									player.sendMessage(ChatColor.YELLOW+"------------- Historial de castigos de "+args[0]+" ---------"); 
 									int j=(paginaActual-1)*5;
 									while(j<res.size() && j<(paginaActual-1)*5+5){
 										player.sendMessage(res.get(j));
 										j++;
 									}
-									player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
+									player.sendMessage(ChatColor.YELLOW+"-------------------     Pagina "+paginaActual+"/"+totalPaginas+"    ------------------");
 									player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/cphistory"+ChatColor.WHITE+ " <jugador> <pagina> para navegar entre las paginas del historial");
 								}
 
@@ -798,11 +798,11 @@ public class Censura extends JavaPlugin{
 						player.sendMessage(ChatColor.RED+"[Censura] Usuario no existe");
 						return false;
 					}
-					String sql="UPDATE `censura` SET `expired`=1 WHERE `playerName`="+args[0];
+					String sql="UPDATE `censura` SET `expired`=1 WHERE `playerName`='"+args[0]+"'";
 					if(!insertar(sql)){
 						player.sendMessage(ChatColor.RED+"Error al intentar eliminar los castigos del usuario");
 					}
-					sql="DELETE FROM `censura` WHERE `playerName`="+args[0];
+					sql="DELETE FROM `censura` WHERE `playerName`='"+args[0]+"'";
 					if(!insertar(sql)){
 						player.sendMessage(ChatColor.RED+"Error al intentar eliminar los castigos del usuario");
 					}
@@ -826,8 +826,6 @@ public class Censura extends JavaPlugin{
 							player.sendMessage("dias: "+days);
 							if (days>0){
 								long date= System.currentTimeMillis()- (days*24*60*60*1000);
-								
-								//BORRAR SOLO LAS LINEAS QUE HAN EXPIRADO PARA ELIMINARLAS
 								
 								String sql="DELETE FROM `censura` WHERE `dateTime` BETWEEN "+date+" AND "+0+" AND `expired`=1";
 								if(!insertar(sql)){
@@ -892,7 +890,7 @@ public class Censura extends JavaPlugin{
 				return false;
 			}else{
 				if(args.length==0){
-					player.sendMessage(ChatColor.YELLOW+"-------------Historial de castigos-------------");
+					player.sendMessage(ChatColor.YELLOW+"----------------   Historial de castigos   ---------------");
 					player.sendMessage(ChatColor.YELLOW+"Fecha  "
 							+ChatColor.AQUA+"Jugador  "
 							+ChatColor.GOLD+"Sancion  "
@@ -905,22 +903,22 @@ public class Censura extends JavaPlugin{
 						player.sendMessage(res.get(j));
 						j++;
 					}
-					player.sendMessage(ChatColor.YELLOW+"---- Pagina 1/"+totalPaginas+" ----");
+					player.sendMessage(ChatColor.YELLOW+"-------------------     Pagina 1/"+totalPaginas+"    ------------------");
 					player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas.");
 				}else if (args.length==1){
 					if(isInteger(args[0])){
 						if(Integer.parseInt(args[0])>totalPaginas || Integer.parseInt(args[0])<1){
-							player.sendMessage("[Censura] Pagina fuera de rango");
+							player.sendMessage(ChatColor.RED+"[Censura] Pagina fuera de rango");
 							return false;
 						}else{
 							paginaActual=Integer.parseInt(args[0]);
-							player.sendMessage(ChatColor.YELLOW+"---- Historial de castigos ----"); 
+							player.sendMessage(ChatColor.YELLOW+"----------------   Historial de castigos   ---------------"); 
 							int j=(paginaActual-1)*5;
 							while(j<res.size() && j<(paginaActual-1)*5+5){
 								player.sendMessage(res.get(j));
 								j++;
 							}
-							player.sendMessage(ChatColor.YELLOW+"---- Pagina "+paginaActual+"/"+totalPaginas+" ----");
+							player.sendMessage(ChatColor.YELLOW+"-------------------     Pagina "+paginaActual+"/"+totalPaginas+"    ------------------");
 							player.sendMessage(ChatColor.WHITE+"Usa "+ChatColor.GOLD+"/chistory"+ChatColor.WHITE+ " <pagina> para navegar entre las paginas.");
 						}						
 					}else{
@@ -992,7 +990,7 @@ public class Censura extends JavaPlugin{
 			sttmt.executeUpdate(op);
 			sttmt.close();
 		} catch (SQLException e) {
-			this.logger.info(ChatColor.RED+"[Censura] Error al intentar ejecutar la operacion de insertar en la base de datos");
+			this.logger.info(ChatColor.RED+"[Censura] Error al intentar ejecutar la operacion en la base de datos");
 			e.printStackTrace();
 			return false;
 		}
@@ -1053,11 +1051,6 @@ public class Censura extends JavaPlugin{
 		}
 	    finaltime=Long.parseLong(dateTime)+duracion;
 	    return finaltime;
-	}
-
-	
-	public static int contarFilas(ResultSet rs){
-		return 1;
 	}
 
 	public static boolean isInteger(String s) {
